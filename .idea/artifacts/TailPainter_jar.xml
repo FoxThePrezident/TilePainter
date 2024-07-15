@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TailPainter:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/</output-path>
+    <root id="archive" name="PixelPainter.jar">
+      <element id="module-output" name="TilePainter" />
+    </root>
+  </artifact>
+</component>
