@@ -1,78 +1,68 @@
 package sk.FoxThePrezident;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 import static sk.FoxThePrezident.TilePainter.*;
 
 public class DrawingPanel extends PreviewPanel {
+	/**
+	 * Disabling drawing cursor while it is drawing something
+	 */
 	private boolean drawCursor = true;
+	/**
+	 * Position of a cursor
+	 */
 	private int cursorY, cursorX;
-	private Listener listener;
 
+	/**
+	 * Drawing panel, inherits from preview
+	 */
 	public DrawingPanel() {
 		super();
-		listener = new Listener();
+		Listener listener = new Listener();
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, tileSize * scale, tileSize * scale);
+		// Calling original painting
+		super.paintComponent(g);
 
-		for (int y = 0; y < tileSize; y++) {
-			for (int x = 0; x < tileSize; x++) {
-				g.setColor(matrix[y][x]);
-				g.fillRect(x * scale, y * scale, scale, scale);
-				g.setColor(Color.WHITE);
-			}
-		}
+		// drawing specific code
+		// Drawing cursor
 		if (drawCursor) {
 			g.setColor(Settings.getColor());
 			g.fillRect(cursorX * scale, cursorY * scale, scale, scale);
 		}
 	}
 
-	public static boolean saveImage() {
-		BufferedImage image = new BufferedImage(tileSize, tileSize, BufferedImage.TYPE_INT_RGB);
-
-		for (int y = 0; y < tileSize; y++) {
-			for (int x = 0; x < tileSize; x++) {
-				Color color = matrix[y][x];
-				image.setRGB(x, y, color.getRGB());
-			}
-		}
-
-		String home = System.getProperty("user.home");
-		File file = new File(home+"/Downloads/image.png");
-		try {
-			ImageIO.write(image, "png", file);
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
-	}
-
-
+	/**
+	 * Updating matrix based on user mouse position
+	 *
+	 * @param e MouseEvent
+	 */
 	private void updateMatrix(MouseEvent e) {
+		// Getting position of a mouse
 		int y = e.getY() / scale;
 		int x = e.getX() / scale;
+		// Trying to set color into matrix
 		try {
 			matrix[y][x] = Settings.getColor();
-		} catch (Exception _) {
+		} catch (Exception ignored) {
 		}
+		// Repainting self
 		repaint();
+		// Calling original class, that it should repaint preview panels
 		TilePainter.repaint();
 	}
 
+	/**
+	 * Click listener
+	 */
 	private class Listener implements MouseListener, MouseMotionListener {
 		@Override
 		public void mouseClicked(MouseEvent e) {
@@ -106,9 +96,9 @@ public class DrawingPanel extends PreviewPanel {
 		public void mouseMoved(MouseEvent e) {
 			cursorY = e.getY() / scale;
 			cursorX = e.getX() / scale;
-			// Smaller
+			// Smaller, top and left
 			if ((cursorX < 0) || (cursorY < 0)) return;
-			// Larger
+			// Larger, bottom and right
 			if ((cursorX > tileSize - 1) || (cursorY > tileSize - 1)) return;
 			repaint();
 		}
