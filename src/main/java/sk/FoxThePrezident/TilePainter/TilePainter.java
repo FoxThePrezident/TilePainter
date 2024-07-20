@@ -1,36 +1,24 @@
-package sk.FoxThePrezident;
+package sk.FoxThePrezident.TilePainter;
+
+import sk.FoxThePrezident.TilePainter.panels.Controls;
+import sk.FoxThePrezident.TilePainter.panels.DrawingPanel;
+import sk.FoxThePrezident.TilePainter.panels.PreviewPanel;
+import sk.FoxThePrezident.TilePainter.panels.ColorChooser;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class TilePainter {
 	/**
-	 * Color matrix, for storing pixels in an image
-	 */
-	public static Color[][] matrix;
-	/**
-	 * Size of a tile
-	 */
-	public static int tileSize;
-	/**
-	 * Scale factor
-	 */
-	public static int scale;
-	/**
 	 * Window
 	 */
-	private static JFrame frame;
+	public static JFrame frame;
 	/**
 	 * Area grouping each display panel
 	 */
 	private static JPanel drawingArea;
 	/**
-	 * Settings window
-	 * Holding stuff like save button and color palette
-	 */
-	private static Settings settingsArea;
-	/**
-	 * Drawing panel, which user paints on
+	 * Panel containing preview and drawing panels
 	 */
 	private static DrawingPanel drawingPanel;
 	/**
@@ -40,28 +28,37 @@ public class TilePainter {
 
 	/**
 	 * Main window for drawing
-	 * @param TileSize size of output image
-	 * @param Scale factor for resizing image, so it is easier to see
 	 */
-	public TilePainter(int TileSize, int Scale) {
+	public TilePainter() {
 		// Initializing variables
 		frame = new JFrame("Tile painter");
-		settingsArea = new Settings();
-		tileSize = TileSize;
-		scale = Scale;
+		ColorChooser colorChooserArea = new ColorChooser();
+		Controls controlsPanel = new Controls();
 
-		// Initializing matrix, to be every pixel White
-		matrix = new Color[tileSize][tileSize];
-		for (int y = 0; y < tileSize; y++) {
-			for (int x = 0; x < tileSize; x++) {
-				matrix[y][x] = Color.WHITE;
-			}
-		}
+		// Setting layout
+		frame.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
 
-		// Setting up grid layout
-		frame.setLayout(new GridLayout(1, 2));
+		// Adding settings area (0, 0)
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		frame.add(colorChooserArea, gbc);
+		gbc.gridwidth = 1;
 
+		// Adding controls panel (0, 1)
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		frame.add(controlsPanel, gbc);
+
+		// Drawing area
 		initDrawing();
+		gbc.gridx = 1;
+		gbc.gridy = 1;
+		frame.add(drawingArea, gbc);
 
 		// Initializing window
 		frame.pack();
@@ -80,6 +77,7 @@ public class TilePainter {
 			if (panel == null) continue;
 			panel.repaint();
 		}
+		drawingPanel.repaint();
 	}
 
 	/**
@@ -109,6 +107,5 @@ public class TilePainter {
 			previewPanels[i] = panel;
 			drawingArea.add(panel);
 		}
-		frame.add(drawingArea);
 	}
 }

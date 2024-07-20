@@ -1,12 +1,14 @@
-package sk.FoxThePrezident;
+package sk.FoxThePrezident.TilePainter.panels;
+
+import sk.FoxThePrezident.TilePainter.Matrix;
 
 import javax.swing.*;
 
 import java.awt.*;
 
-import static sk.FoxThePrezident.TilePainter.scale;
-import static sk.FoxThePrezident.TilePainter.tileSize;
-import static sk.FoxThePrezident.TilePainter.matrix;
+import static sk.FoxThePrezident.TilePainter.Matrix.scale;
+import static sk.FoxThePrezident.TilePainter.Matrix.tileSize;
+
 
 public class PreviewPanel extends JPanel {
 	/**
@@ -22,6 +24,7 @@ public class PreviewPanel extends JPanel {
 
 	/**
 	 * Painting squares onto a panel
+	 *
 	 * @param g the <code>Graphics</code> object to protect
 	 */
 	@Override
@@ -32,7 +35,7 @@ public class PreviewPanel extends JPanel {
 		// Looping through every color in matrix and displaying it as a rectangle onto panel
 		for (int y = 0; y < tileSize; y++) {
 			for (int x = 0; x < tileSize; x++) {
-				g.setColor(matrix[y][x]);
+				g.setColor(Matrix.matrix[y][x]);
 				g.fillRect(x * scale, y * scale, scale, scale);
 				g.setColor(Color.WHITE);
 			}
